@@ -35,12 +35,38 @@ app.get('/', (req, res) => {
 
 // GET request handler for '/year/*'
 app.get('/year/:selected_year', (req, res) => {
-    console.log(req.params.selected_year);
-    fs.readFile(path.join(template_dir, 'year.html'), (err, template) => {
+    fs.readFile(path.join(template_dir, 'year.html'), "utf-8", (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
+        if(err)
+        {
+            res.status(404).send('Error: file not found');
+        }
+        else
+        {
+            let response = template.replace("{{{YEAR}}}", req.params.selected_year);
+            response = response.replace("{{{CONTENT HERE}}}", req.params.selected_year);
 
-        res.status(200).type('html').send(template); // <-- you may need to change this
+            db.all('select * from Consumption where year = ?', [req.params.selected_year], (err, rows) => {
+                let i;
+                let table_items = '';
+                for(i=0; i <= 50; i++)
+                {
+                    table_items += '<tr>\n';
+                    table_items += '<td>' + rows[i].state_abbreviation + '</td>\n';
+                    table_items += '<td>' + rows[i].coal + '</td>\n';
+                    table_items += '<td>' + rows[i].natural_gas+ '</td>\n';
+                    table_items += '<td>' + rows[i].nuclear + '</td>\n';
+                    table_items += '<td>' + rows[i].petroleum+ '</td>\n';
+                    table_items += '<td>' + rows[i].renewable + '</td>\n';
+                    table_items += '<td>' + (parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable)) + '</td>\n';
+                    table_items += '</tr>\n';
+                }
+                response = response.replace("{{{TABLE HERE}}}", table_items);
+                res.status(200).type('html').send(response); // <-- you may need to change this
+            });
+        }
+        
     });
 });
 
