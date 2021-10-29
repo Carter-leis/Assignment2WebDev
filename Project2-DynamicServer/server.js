@@ -72,23 +72,81 @@ app.get('/year/:selected_year', (req, res) => {
 
 // GET request handler for '/state/*'
 app.get('/state/:selected_state', (req, res) => {
-    console.log(req.params.selected_state);
-    fs.readFile(path.join(template_dir, 'state.html'), (err, template) => {
+    fs.readFile(path.join(template_dir, 'state.html'), "utf-8", (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
+        if(err)
+        {
+            res.status(404).send('Error: file not found');
+        }
+        else
+        {
+            let response = template.replace("{{{STATE}}}", req.params.selected_state);
+            response = response.replace("{{{CONTENT HERE}}}", req.params.selected_state);
 
-        res.status(200).type('html').send(template); // <-- you may need to change this
+            db.all('select * from Consumption where state_abbreviation = ?', [req.params.selected_state], (err, rows) => {
+                let i;
+                let table_items = '';
+                for(i=0; i <= 58; i++)
+                {
+                    table_items += '<tr>\n';
+                    table_items += '<td>' + rows[i].year + '</td>\n';
+                    table_items += '<td>' + rows[i].coal + '</td>\n';
+                    table_items += '<td>' + rows[i].natural_gas+ '</td>\n';
+                    table_items += '<td>' + rows[i].nuclear + '</td>\n';
+                    table_items += '<td>' + rows[i].petroleum+ '</td>\n';
+                    table_items += '<td>' + rows[i].renewable + '</td>\n';
+                    table_items += '<td>' + (parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable)) + '</td>\n';
+                    table_items += '</tr>\n';
+                }
+                response = response.replace("{{{TABLE HERE}}}", table_items);
+                res.status(200).type('html').send(response); // <-- you may need to change this
+            });
+        }
     });
 });
 
 // GET request handler for '/energy/*'
 app.get('/energy/:selected_energy_source', (req, res) => {
     console.log(req.params.selected_energy_source);
-    fs.readFile(path.join(template_dir, 'energy.html'), (err, template) => {
+    fs.readFile(path.join(template_dir, 'energy.html'), "utf-8", (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
-
-        res.status(200).type('html').send(template); // <-- you may need to change this
+        if(err)
+        {
+            res.status(404).send('Error: file not found');
+        }
+        else
+        {
+            let energy = req.params.selected_energy_source;
+            if( energy == "coal")
+            {
+                let response = template.replace("{{{ENERGY TYPE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source);
+                
+                db.all('select state_abbreviation,year,coal from Consumption', (err, rows) => {
+                    let i;
+                    let table_items = '';
+                    table_items += '<tr>\n' +'<th> year </th>\n';
+                    for(i=0; i <= 50; i++)
+                    {
+                        table_items += '<th>' + rows[i].state_abbreviation + '</th>\n';
+                    }
+                    table_items += '<tr>\n';
+                    for(i=0; i<=58; i++)
+                    {
+                        table_items += '<tr>\n';
+                        table_items += '<td>' + rows[i*51].year + '</td>\n';
+                        for(j=0; j<=50;j++) {
+                            table_items += '<td>' + rows[i*51+j].coal+ '</td>\n';
+                        }
+                        table_items += '</tr>\n'
+                    }
+                    response = response.replace("{{{TABLE HERE}}}", table_items);
+                    res.status(200).type('html').send(response); // <-- you may need to change this
+                });
+            }
+        }
     });
 });
 
