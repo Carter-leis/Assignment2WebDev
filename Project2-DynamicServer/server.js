@@ -124,7 +124,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                 let response = template.replace("{{{ENERGY TYPE}}}", req.params.selected_energy_source);
                 response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source);
                 
-                db.all('select state_abbreviation,year,coal from Consumption order by year', (err, rows) => {
+                db.all('select state_abbreviation,year,coal from Consumption order by year, state_abbreviation', (err, rows) => {
                     let i;
                     let table_items = '';
                     table_items += '<tr>\n' +'<th> year </th>\n';
