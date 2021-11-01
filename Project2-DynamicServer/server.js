@@ -50,6 +50,11 @@ app.get('/year/:selected_year', (req, res) => {
             db.all('select * from Consumption where year = ?', [req.params.selected_year], (err, rows) => {
                 let i;
                 let table_items = '';
+                let totalCoal = 0;
+                let totalNatural_gas = 0;
+                let totalNuclear = 0;
+                let totalPetroleum = 0;
+                let totalRenewable = 0;
                 for(i=0; i <= 50; i++)
                 {
                     table_items += '<tr>\n';
@@ -61,8 +66,20 @@ app.get('/year/:selected_year', (req, res) => {
                     table_items += '<td>' + rows[i].renewable + '</td>\n';
                     table_items += '<td>' + (parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable)) + '</td>\n';
                     table_items += '</tr>\n';
+
+                    totalCoal += parseInt(rows[i].coal);
+                    totalNatural_gas += parseInt(rows[i].natural_gas);
+                    totalNuclear += parseInt(rows[i].nuclear);
+                    totalPetroleum += parseInt(rows[i].petroleum);
+                    totalRenewable += parseInt(rows[i].renewable);
                 }
                 response = response.replace("{{{TABLE HERE}}}", table_items);
+                response = response.replace("{{{COAL_COUNT}}}", totalCoal);
+                response = response.replace("{{{NATURAL_GAS_COUNT}}}", totalNatural_gas);
+                response = response.replace("{{{NUCLEAR_COUNT}}}", totalNuclear);
+                response = response.replace("{{{PETROLEUM_COUNT}}}", totalPetroleum);
+                response = response.replace("{{{RENEWABLE_COUNT}}}", totalRenewable);
+                console.log(response);
                 res.status(200).type('html').send(response); // <-- you may need to change this
             });
         }
@@ -84,9 +101,14 @@ app.get('/state/:selected_state', (req, res) => {
             let response = template.replace("{{{STATE}}}", req.params.selected_state);
             response = response.replace("{{{CONTENT HERE}}}", req.params.selected_state);
 
-            db.all('select * from Consumption where state_abbreviation = ?', [req.params.selected_state], (err, rows) => {
+            db.all('select * from Consumption where state_abbreviation = ? order by year', [req.params.selected_state], (err, rows) => {
                 let i;
                 let table_items = '';
+                let totalCoal = [];
+                let totalNatural_gas = [];
+                let totalNuclear = [];
+                let totalPetroleum = [];
+                let totalRenewable = [];
                 for(i=0; i <= 58; i++)
                 {
                     table_items += '<tr>\n';
@@ -98,8 +120,19 @@ app.get('/state/:selected_state', (req, res) => {
                     table_items += '<td>' + rows[i].renewable + '</td>\n';
                     table_items += '<td>' + (parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable)) + '</td>\n';
                     table_items += '</tr>\n';
+                
+                    totalCoal.push(parseInt(rows[i].coal));
+                    totalNatural_gas.push(parseInt(rows[i].natural_gas));
+                    totalNuclear.push(parseInt(rows[i].nuclear));
+                    totalPetroleum.push(parseInt(rows[i].petroleum));
+                    totalRenewable.push(parseInt(rows[i].renewable));
                 }
                 response = response.replace("{{{TABLE HERE}}}", table_items);
+                response = response.replace("{{{COAL_COUNTS}}}", totalCoal);
+                response = response.replace("{{{NATURAL_GAS_COUNTS}}}", totalNatural_gas);
+                response = response.replace("{{{NUCLEAR_COUNTS}}}", totalNuclear);
+                response = response.replace("{{{PETROLEUM_COUNTS}}}", totalPetroleum);
+                response = response.replace("{{{RENEWABLE_COUNTS}}}", totalRenewable);
                 res.status(200).type('html').send(response); // <-- you may need to change this
             });
         }
