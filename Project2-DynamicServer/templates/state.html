@@ -14,7 +14,14 @@
         var nuclear_counts = {{{NUCLEAR_COUNTS}}};         // array - value per year (e.g. [1234, 2567, ...])
         var petroleum_counts = {{{PETROLEUM_COUNTS}}};     // array - value per year (e.g. [1234, 2567, ...])
         var renewable_counts = {{{RENEWABLE_COUNTS}}};     // array - value per year (e.g. [1234, 2567, ...])
+        var years = [];
+        var start = 1960;
+        for(var i=0; i<=58; i++)
+        {
+            years.append(start+i);
+        }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
 </head>
 <body >
     <!-- create template here -->
@@ -33,5 +40,37 @@
             {{{TABLE HERE}}}
         </table>
     </div>
+    <div>
+        <canvas id="MyChart" width="400" height="400">
+
+        </canvas>
+    </div>
+    <script>
+        const ctx = document.getElementById('MyChart').getContext('2d');
+        const lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                    labels: [1,2,3,4,5,6,7,8,9,10,11,12,13],
+                    datasets: [{
+                        label: 'Coal Counts',
+                        data: [5,6,2,5,3,6,3,45,5],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)'
+                            ],
+                        borderWidth: 1
+                        },
+                        {
+                            label: 'Natural Gas Counts',
+                            data: [3,6,3,6,77,6,2,4],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)'
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                }
+            }
+    );
+    </script>
 </body>
 </html>
