@@ -5,6 +5,7 @@ let path = require('path');
 // NPM modules
 let express = require('express');
 let sqlite3 = require('sqlite3');
+const { table } = require('console');
 
 
 let public_dir = path.join(__dirname, 'public');
@@ -152,14 +153,16 @@ app.get('/energy/:selected_energy_source', (req, res) => {
         else
         {
             let energy = req.params.selected_energy_source;
+            let energy_table = '';
             if( energy == "coal")
             {
-                let response = template.replace("{{{ENERGY TYPE}}}", req.params.selected_energy_source);
+                let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
                 response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source);
                 
                 db.all('select state_abbreviation,year,coal from Consumption order by year, state_abbreviation', (err, rows) => {
                     let i;
                     let table_items = '';
+                    
                     table_items += '<tr>\n' +'<th> year </th>\n';
                     for(i=0; i <= 50; i++)
                     {
@@ -175,7 +178,28 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                         }
                         table_items += '</tr>\n'
                     }
+                    
+                    energy_table += '{';
+                    for(i=0; i<=50; i++) {
+                        energy_table +=  rows[i].state_abbreviation + ': ['
+                        for(j=0;j<=58;j++){
+                            energy_table += rows[i+j*51].coal;
+                            if(j !=58) {
+                                energy_table += ', '
+                            } else {
+                                energy_table += ']'
+                            }
+                        }
+                        if(i != 50) {
+                            energy_table += ', '
+                        } else {
+                            energy_table += '}'
+                        }
+                    }
+                    
                     response = response.replace("{{{TABLE HERE}}}", table_items);
+                    response = response.replace("{{{ENERGY_COUNTS}}}",energy_table);
+                    console.log(response);
                     res.status(200).type('html').send(response); // <-- you may need to change this
                 });
             }
