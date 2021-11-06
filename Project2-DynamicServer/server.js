@@ -154,10 +154,10 @@ app.get('/energy/:selected_energy_source', (req, res) => {
         {
             let energy = req.params.selected_energy_source;
             let energy_table = '';
-            if( energy == "coal")
+            if( energy.toLowerCase() == "coal")
             {
                 let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
-                response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source.toUpperCase());
                 
                 db.all('select state_abbreviation,year,coal from Consumption order by year, state_abbreviation', (err, rows) => {
                     let i;
@@ -196,10 +196,196 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                             energy_table += '}'
                         }
                     }
-                    
                     response = response.replace("{{{TABLE HERE}}}", table_items);
                     response = response.replace("{{{ENERGY_COUNTS}}}",energy_table);
-                    console.log(response);
+                    res.status(200).type('html').send(response); // <-- you may need to change this
+                });
+            }
+            if( energy.toLowerCase() == "natural_gas")
+            {
+                let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source.toUpperCase());
+                
+                db.all('select state_abbreviation,year,natural_gas from Consumption order by year, state_abbreviation', (err, rows) => {
+                    let i;
+                    let table_items = '';
+                    
+                    table_items += '<tr>\n' +'<th> year </th>\n';
+                    for(i=0; i <= 50; i++)
+                    {
+                        table_items += '<th>' + rows[i].state_abbreviation + '</th>\n';
+                    }
+                    table_items += '<tr>\n';
+                    for(i=0; i<=58; i++)
+                    {
+                        table_items += '<tr>\n';
+                        table_items += '<td>' + rows[i*51].year + '</td>\n';
+                        for(j=0; j<=50;j++) {
+                            table_items += '<td>' + rows[i*51+j].natural_gas+ '</td>\n';
+                        }
+                        table_items += '</tr>\n'
+                    }
+                    
+                    energy_table += '{';
+                    for(i=0; i<=50; i++) {
+                        energy_table +=  rows[i].state_abbreviation + ': ['
+                        for(j=0;j<=58;j++){
+                            energy_table += rows[i+j*51].natural_gas;
+                            if(j !=58) {
+                                energy_table += ', '
+                            } else {
+                                energy_table += ']'
+                            }
+                        }
+                        if(i != 50) {
+                            energy_table += ', '
+                        } else {
+                            energy_table += '}'
+                        }
+                    }
+                    response = response.replace("{{{TABLE HERE}}}", table_items);
+                    response = response.replace("{{{ENERGY_COUNTS}}}",energy_table);
+                    res.status(200).type('html').send(response); // <-- you may need to change this
+                });
+            }
+            if( energy.toLowerCase() == "nuclear")
+            {
+                let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source.toUpperCase());
+                
+                db.all('select state_abbreviation,year,nuclear from Consumption order by year, state_abbreviation', (err, rows) => {
+                    let i;
+                    let table_items = '';
+                    
+                    table_items += '<tr>\n' +'<th> year </th>\n';
+                    for(i=0; i <= 50; i++)
+                    {
+                        table_items += '<th>' + rows[i].state_abbreviation + '</th>\n';
+                    }
+                    table_items += '<tr>\n';
+                    for(i=0; i<=58; i++)
+                    {
+                        table_items += '<tr>\n';
+                        table_items += '<td>' + rows[i*51].year + '</td>\n';
+                        for(j=0; j<=50;j++) {
+                            table_items += '<td>' + rows[i*51+j].nuclear+ '</td>\n';
+                        }
+                        table_items += '</tr>\n'
+                    }
+                    
+                    energy_table += '{';
+                    for(i=0; i<=50; i++) {
+                        energy_table +=  rows[i].state_abbreviation + ': ['
+                        for(j=0;j<=58;j++){
+                            energy_table += rows[i+j*51].nuclear;
+                            if(j !=58) {
+                                energy_table += ', '
+                            } else {
+                                energy_table += ']'
+                            }
+                        }
+                        if(i != 50) {
+                            energy_table += ', '
+                        } else {
+                            energy_table += '}'
+                        }
+                    }
+                    response = response.replace("{{{TABLE HERE}}}", table_items);
+                    response = response.replace("{{{ENERGY_COUNTS}}}",energy_table);
+                    res.status(200).type('html').send(response); // <-- you may need to change this
+                });
+            }
+            if( energy.toLowerCase() == "petroleum")
+            {
+                let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source.toUpperCase());
+                
+                db.all('select state_abbreviation,year,petroleum from Consumption order by year, state_abbreviation', (err, rows) => {
+                    let i;
+                    let table_items = '';
+                    
+                    table_items += '<tr>\n' +'<th> year </th>\n';
+                    for(i=0; i <= 50; i++)
+                    {
+                        table_items += '<th>' + rows[i].state_abbreviation + '</th>\n';
+                    }
+                    table_items += '<tr>\n';
+                    for(i=0; i<=58; i++)
+                    {
+                        table_items += '<tr>\n';
+                        table_items += '<td>' + rows[i*51].year + '</td>\n';
+                        for(j=0; j<=50;j++) {
+                            table_items += '<td>' + rows[i*51+j].petroleum+ '</td>\n';
+                        }
+                        table_items += '</tr>\n'
+                    }
+                    
+                    energy_table += '{';
+                    for(i=0; i<=50; i++) {
+                        energy_table +=  rows[i].state_abbreviation + ': ['
+                        for(j=0;j<=58;j++){
+                            energy_table += rows[i+j*51].petroleum;
+                            if(j !=58) {
+                                energy_table += ', '
+                            } else {
+                                energy_table += ']'
+                            }
+                        }
+                        if(i != 50) {
+                            energy_table += ', '
+                        } else {
+                            energy_table += '}'
+                        }
+                    }
+                    response = response.replace("{{{TABLE HERE}}}", table_items);
+                    response = response.replace("{{{ENERGY_COUNTS}}}",energy_table);
+                    res.status(200).type('html').send(response); // <-- you may need to change this
+                });
+            }
+            if( energy.toLowerCase() == "renewable")
+            {
+                let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source.toUpperCase());
+                
+                db.all('select state_abbreviation,year,renewable from Consumption order by year, state_abbreviation', (err, rows) => {
+                    let i;
+                    let table_items = '';
+                    
+                    table_items += '<tr>\n' +'<th> year </th>\n';
+                    for(i=0; i <= 50; i++)
+                    {
+                        table_items += '<th>' + rows[i].state_abbreviation + '</th>\n';
+                    }
+                    table_items += '<tr>\n';
+                    for(i=0; i<=58; i++)
+                    {
+                        table_items += '<tr>\n';
+                        table_items += '<td>' + rows[i*51].year + '</td>\n';
+                        for(j=0; j<=50;j++) {
+                            table_items += '<td>' + rows[i*51+j].renewable+ '</td>\n';
+                        }
+                        table_items += '</tr>\n'
+                    }
+                    
+                    energy_table += '{';
+                    for(i=0; i<=50; i++) {
+                        energy_table +=  rows[i].state_abbreviation + ': ['
+                        for(j=0;j<=58;j++){
+                            energy_table += rows[i+j*51].renewable;
+                            if(j !=58) {
+                                energy_table += ', '
+                            } else {
+                                energy_table += ']'
+                            }
+                        }
+                        if(i != 50) {
+                            energy_table += ', '
+                        } else {
+                            energy_table += '}'
+                        }
+                    }
+                    response = response.replace("{{{TABLE HERE}}}", table_items);
+                    response = response.replace("{{{ENERGY_COUNTS}}}",energy_table);
                     res.status(200).type('html').send(response); // <-- you may need to change this
                 });
             }
