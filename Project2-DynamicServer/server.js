@@ -43,6 +43,10 @@ app.get('/year/:selected_year', (req, res) => {
         {
             res.status(404).send('Error: file not found');
         }
+        if(req.params.selected_year < 1960 || req.params.selected_year > 2018)
+        {
+            res.status(404).send('Error: No data for year: '+req.params.selected_year);
+        }
         else
         {
             let response = template.replace("{{{YEAR}}}", req.params.selected_year);
@@ -93,16 +97,21 @@ app.get('/state/:selected_state', (req, res) => {
     fs.readFile(path.join(template_dir, 'state.html'), "utf-8", (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
+        var statesAval = ['AK','AL','AR','AZ','CA','CO','CT','DC','DE','FL','GA','HI','IA','ID','IL','IN','KS','KY','LA','MA','MD','ME','MI','MN','MO','MS','MT','NC','ND','NE','NH','NJ','NM','NV','NY','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VA','VT','WA','WI','WV','WY'];
         if(err)
         {
             res.status(404).send('Error: file not found');
         }
+        if(!statesAval.includes(req.params.selected_state.toUpperCase()))
+        {
+            res.status(404).send('Error: Data not found for state: '+req.params.selected_state);
+        }
         else
         {
-            let response = template.replace("{{{STATE}}}", req.params.selected_state);
-            response = response.replace("{{{CONTENT HERE}}}", req.params.selected_state);
+            let response = template.replace("{{{STATE}}}", req.params.selected_state.toUpperCase());
+            response = response.replace("{{{CONTENT HERE}}}", req.params.selected_state.toUpperCase());
 
-            db.all('select * from Consumption where state_abbreviation = ? order by year', [req.params.selected_state], (err, rows) => {
+            db.all('select * from Consumption where state_abbreviation = ? order by year', [req.params.selected_state.toUpperCase()], (err, rows) => {
                 let i;
                 let table_items = '';
                 let totalCoal = [];
@@ -146,9 +155,14 @@ app.get('/energy/:selected_energy_source', (req, res) => {
     fs.readFile(path.join(template_dir, 'energy.html'), "utf-8", (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
+        var energy = ['nuclear', 'renewable', 'coal', 'petroleum', 'natural gas'];
         if(err)
         {
             res.status(404).send('Error: file not found');
+        }
+        if(!energy.includes(req.params.selected_energy_source.toLowerCase()))
+        {
+            res.status(404).send('Error: No data for energy source: '+ req.params.selected_energy_source);
         }
         else
         {
@@ -157,7 +171,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             if( energy.toLowerCase() == "coal")
             {
                 let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
-                response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source.toUpperCase());
+                response = response.replace("{{{CONTENT HERE}}}", "Coal");
                 
                 db.all('select state_abbreviation,year,coal from Consumption order by year, state_abbreviation', (err, rows) => {
                     let i;
@@ -201,7 +215,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                     res.status(200).type('html').send(response); // <-- you may need to change this
                 });
             }
-            if( energy.toLowerCase() == "natural_gas")
+            if( energy.toLowerCase() == "natural gas")
             {
                 let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
                 response = response.replace("{{{CONTENT HERE}}}", req.params.selected_energy_source.toUpperCase());
