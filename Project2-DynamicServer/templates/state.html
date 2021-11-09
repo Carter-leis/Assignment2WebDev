@@ -4,73 +4,237 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>US Energy Consumption</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <script type="application/javascript">
         // `state` and arrays of consumption per year => set these variables equal to appropriate value
         //   * these variables will be defined and accessible from any script loaded after this one
-        var state = {{{STATE}}};
-        var coal_counts = {{{COAL_COUNTS}}};               // array - value per year (e.g. [1234, 2567, ...])
-        var natural_gas_counts = {{{NATURAL_GAS_COUNTS}}}; // array - value per year (e.g. [1234, 2567, ...])
-        var nuclear_counts = {{{NUCLEAR_COUNTS}}};         // array - value per year (e.g. [1234, 2567, ...])
-        var petroleum_counts = {{{PETROLEUM_COUNTS}}};     // array - value per year (e.g. [1234, 2567, ...])
-        var renewable_counts = {{{RENEWABLE_COUNTS}}};     // array - value per year (e.g. [1234, 2567, ...])
+        var state = "{{{STATE}}}";
+        var coal_counts = [{{{COAL_COUNTS}}}];               // array - value per year (e.g. [1234, 2567, ...])
+        var natural_gas_counts = [{{{NATURAL_GAS_COUNTS}}}]; // array - value per year (e.g. [1234, 2567, ...])
+        var nuclear_counts = [{{{NUCLEAR_COUNTS}}}];         // array - value per year (e.g. [1234, 2567, ...])
+        var petroleum_counts = [{{{PETROLEUM_COUNTS}}}];     // array - value per year (e.g. [1234, 2567, ...])
+        var renewable_counts = [{{{RENEWABLE_COUNTS}}}];     // array - value per year (e.g. [1234, 2567, ...])
         var years = [];
+        var coal_new = [];
         var start = 1960;
         for(var i=0; i<=58; i++)
         {
-            years.append(start+i);
+            years.push(start+i);
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+    <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+    <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+     <style type="text/css">
+        
+    html,
+    body,
+    #container {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    }
+                        
+    </style>
 </head>
 <body >
-    <!-- create template here -->
-    <div id="State" style="font-size: 4rem; text-align: center;"> {{{CONTENT HERE}}} Energy Report</div>
-    <div>
-        <table id="table">
-            <tr>
-                <th>Year</th>
-                <th>Coal</th>
-                <th>Natural Gas</th>
-                <th>Nuclear</th>
-                <th>Petroleum</th>
-                <th>Renewable</th>
-                <th>Total</th>
-            </tr>
-            {{{TABLE HERE}}}
-        </table>
-    </div>
-    <div>
-        <canvas id="MyChart" width="400" height="400">
+    <h1 class="header">
+            <a href="http://localhost:8000/year/2018">Year</a>
+            <a href="http://localhost:8000/state/MN">State</a>
+            <a href="http://localhost:8000/energy/coal">Energy</a>
+    </h1>
+  <div id="State" style="font-size: 4rem; text-align: center;"> {{{CONTENT HERE}}} Energy Report</div>
 
-        </canvas>
+    <div id="container"></div>
+      <script>
+        anychart.onDocumentReady(function () {
+          // create data set on our data
+          var dict = {};
+          for (var i = 0; i < years.length; i++) {
+            dict[years[i]] = [years[i], coal_counts[i], natural_gas_counts[i], nuclear_counts[i], petroleum_counts[i], renewable_counts[i]];
+          }
+          var dataSet = anychart.data.set([
+            dict[1960],
+            dict[1961],
+            dict[1962],
+            dict[1963],
+            dict[1964],
+            dict[1965],
+            dict[1966],
+            dict[1967],
+            dict[1968],
+            dict[1969],
+            dict[1970],
+            dict[1971],
+            dict[1972],
+            dict[1973],
+            dict[1974],
+            dict[1975],
+            dict[1976],
+            dict[1977],
+            dict[1978],
+            dict[1979],
+            dict[1980],
+            dict[1981],
+            dict[1982],
+            dict[1983],
+            dict[1984],
+            dict[1985],
+            dict[1986],
+            dict[1987],
+            dict[1988],
+            dict[1989],
+            dict[1990],
+            dict[1991],
+            dict[1992],
+            dict[1993],
+            dict[1994],
+            dict[1995],
+            dict[1996],
+            dict[1997],
+            dict[1998],
+            dict[1999],
+            dict[2000],
+            dict[2001],
+            dict[2002],
+            dict[2003],
+            dict[2004],
+            dict[2005],
+            dict[2006],
+            dict[2007],
+            dict[2008],
+            dict[2009],
+            dict[2010],
+            dict[2011],
+            dict[2012],
+            dict[2013],
+            dict[2014],
+            dict[2015],
+            dict[2016],
+            dict[2017],
+            dict[2018],
+          ]);
+                            
+          // map data for the first series, take x from the zero area and value from the first area of data set
+          var firstSeriesData = dataSet.mapAs({ x: 0, value: 1 });
+
+          // map data for the second series, take x from the zero area and value from the second area of data set
+          var secondSeriesData = dataSet.mapAs({ x: 0, value: 2 });
+
+          // map data for the second series, take x from the zero area and value from the third area of data set
+          var thirdSeriesData = dataSet.mapAs({ x: 0, value: 3 });
+
+          // map data for the fourth series, take x from the zero area and value from the fourth area of data set
+          var fourthSeriesData = dataSet.mapAs({ x: 0, value: 4 });
+
+          var fifthSeriesData = dataSet.mapAs({ x: 0, value: 5 });
+   
+          // create bar chart
+          var chart = anychart.area();
+
+          // turn on chart animation
+          chart.animation(true);
+
+          // force chart to stack values by Y scale.
+          chart.yScale().stackMode('percent');
+
+          var crosshair = chart.crosshair();
+          // turn on the crosshair
+          crosshair.enabled(true).yStroke(null).xStroke('#fff').zIndex(99);
+          crosshair.yLabel().enabled(false);
+          crosshair.xLabel().enabled(false);
+                            
+          // set chart title text settings
+          chart.title('Percentage of Energy Consumption By Energy Type');
+          chart.title().padding([0, 0, 10, 0]);
+
+          // set yAxis labels formatting, force it to add % to values
+          chart.yAxis(0).labels().format('{%Value}%');
+
+          // helper function to setup label settings for all series
+          var setupSeries = function (series, name) {
+            series
+              .name(name)
+              .stroke('3 #fff 1')
+              .fill(function () {
+                return this.sourceColor + ' 0.8';
+              });
+            series.markers().zIndex(100);
+            series.hovered().stroke('3 #fff 1');
+            series
+              .hovered()
+              .markers()
+              .enabled(true)
+              .type('circle')
+              .size(4)
+              .stroke('1.5 #fff');
+          };
+
+          // temp variable to store series instance
+          var series;
+
+          // create first series with mapped data
+          series = chart.area(firstSeriesData);
+          setupSeries(series, 'Coal');
+          series.fill("navy");
+
+          // create second series with mapped data
+          series = chart.area(secondSeriesData);
+          setupSeries(series, 'Natural Gas');
+          series.fill("MediumAquaMarine");
+
+          // create third series with mapped data
+          series = chart.area(thirdSeriesData);
+          setupSeries(series, 'Nuclear');
+          series.fill("LightCoral");
+
+          // create fourth series with mapped data
+          series = chart.area(fourthSeriesData);
+          setupSeries(series, 'Petroleum');
+          series.fill("LemonChiffon");
+
+
+          series = chart.area(fifthSeriesData);
+          setupSeries(series, 'Renewable');
+          series.fill("RebeccaPurple");
+
+
+          // set interactivity and toolitp settings
+          chart.interactivity().hoverMode('by-x');
+          chart.tooltip().displayMode('union');
+
+          // turn on legend
+          chart.legend().enabled(true).fontSize(13).padding([0, 0, 25, 0]);
+
+          // set container id for the chart
+          chart.container('container');
+
+          // initiate chart drawing
+          chart.draw();
+        });
+                              
+      </script>
     </div>
-    <script>
-        const ctx = document.getElementById('MyChart').getContext('2d');
-        const lineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                    labels: [1,2,3,4,5,6,7,8,9,10,11,12,13],
-                    datasets: [{
-                        label: 'Coal Counts',
-                        data: [5,6,2,5,3,6,3,45,5],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)'
-                            ],
-                        borderWidth: 1
-                        },
-                        {
-                            label: 'Natural Gas Counts',
-                            data: [3,6,3,6,77,6,2,4],
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)'
-                            ],
-                            borderWidth: 1
-                        }
-                    ]
-                }
-            }
-    );
-    </script>
+
+        <!-- create template here -->
+        <div>
+            <table id="table">
+                <tr>
+                    <th>Year</th>
+                    <th>Coal</th>
+                    <th>Natural Gas</th>
+                    <th>Nuclear</th>
+                    <th>Petroleum</th>
+                    <th>Renewable</th>
+                    <th>Total</th>
+                </tr>
+                {{{TABLE HERE}}}
+            </table>
+        </div>
+                                            
 </body>
 </html>
