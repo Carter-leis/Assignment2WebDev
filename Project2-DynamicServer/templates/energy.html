@@ -16,10 +16,20 @@
 <body>
     <!-- create template here -->
     <h1 class="header">
-            <a href="http://localhost:8000/year/2018">Year</a>
-            <a href="http://localhost:8000/state/MN">State</a>
-            <a href="http://localhost:8000/energy/coal">Energy</a>
-        </h1>
+        <a href="http://localhost:8000/year/2018">Home</a>
+        <a href="http://localhost:8000/state/MN">State</a>
+        <a href="http://localhost:8000/energy/coal">Energy</a>
+    </h1>
+    <div class="newValue">Desired energy:
+        <input id="new_energy" type="text" />
+        <button id="submit" type="button" onclick="insertNewEnergy();">Submit</button>
+        <script type="application/javascript">
+            function insertNewEnergy() {
+                let energy = document.getElementById("new_energy").value;
+                window.open("/energy/" + energy,"_self")
+            };
+        </script>
+    </div>
     <div id="energy" style="font-size: 4rem; text-align: center;"> {{{CONTENT HERE}}} Energy Report</div>
     <div>
             <canvas id='MyChart' width='400' height='400'>

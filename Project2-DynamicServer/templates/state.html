@@ -43,10 +43,20 @@
 </head>
 <body >
     <h1 class="header">
-            <a href="http://localhost:8000/year/2018">Year</a>
-            <a href="http://localhost:8000/state/MN">State</a>
-            <a href="http://localhost:8000/energy/coal">Energy</a>
+        <a href="http://localhost:8000/year/2018">Home</a>
+        <a href="http://localhost:8000/state/MN">State</a>
+        <a href="http://localhost:8000/energy/coal">Energy</a>
     </h1>
+    <div class="newValue">Desired state:
+        <input id="new_state" type="text" />
+        <button id="submit" type="button" onclick="insertNewState();">Submit</button>
+        <script type="application/javascript">
+            function insertNewState() {
+                let state = document.getElementById("new_state").value;
+                window.open("/state/" + state,"_self")
+            };
+        </script>
+    </div>
   <div id="State" style="font-size: 4rem; text-align: center;"> {{{CONTENT HERE}}} Energy Report</div>
 
     <div id="container"></div>

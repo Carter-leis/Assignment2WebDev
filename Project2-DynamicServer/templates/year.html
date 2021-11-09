@@ -20,24 +20,19 @@
 <body>
     <h1 class="header">
         <a href="http://localhost:8000/year/2018">Home</a>
-        <a href="http://localhost:8000/year/2018" >Year</a>
-        <input id="new_year" type="text" />
-        <button id="submit" type="button" onclick="insertNewYear();">Submit</button>
-            <script type="application/javascript">
-                function insertNewYear() {
-                    let year = document.getElementById("new_year").value;
-                    let xhr = new XMLHttpRequest();
-                    
-                    xhr.onreadystatechange = () => {
-                        if(xhr.readyState == 4) {
-                            alert(xhr.response);
-                        }
-                    }
-                    xhr.open('get', '/year/:'+ year);
-            </script>
         <a href="http://localhost:8000/state/MN">State</a>
         <a href="http://localhost:8000/energy/coal">Energy</a>
     </h1>
+    <div class="newValue">Desired year:
+        <input id="new_year" type="text" />
+        <button id="submit" type="button" onclick="insertNewYear();">Submit</button>
+        <script type="application/javascript">
+            function insertNewYear() {
+                let year = document.getElementById("new_year").value;
+                window.open("/year/" + year,"_self")
+            };
+        </script>
+    </div>
     <div class="year"> {{{CONTENT HERE}}} Energy Report</div>
     <div>
         <canvas id="MyChart">
@@ -68,9 +63,7 @@
             datasets: [{
                 label: 'Energy Counts',
                 data: [coal_count, natural_gas_count, nuclear_count, petroleum_count, renewable_count],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)'
-                ],
+                backgroundColor: [ "black", "yellow", "orange", "brown", "green"],
                 borderWidth: 1
             }]
         },
