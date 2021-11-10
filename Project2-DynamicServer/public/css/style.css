@@ -1,1 +1,48 @@
 /* Custom CSS Rules */
+.header {
+    font-size: 2rem;
+    text-align: center;
+    color: black;
+}
+
+a {
+    color: black;
+    margin: 2rem;
+}
+
+.year {
+    font-size: 3rem;
+    text-align: center;
+    color: black;
+}
+
+.state {
+    font-size: 3rem;
+    text-align: center;
+    color: black;
+}
+
+.energy {
+    font-size: 3rem;
+    text-align: center;
+    color: black;
+}
+
+#table {
+    border: 2px solid black;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.newValue {
+    text-align: center;
+}
+th {
+    border-bottom: 1px solid black;
+}
+
+#MyChart {
+    height: 100px;
+    width: 100px;
+}
