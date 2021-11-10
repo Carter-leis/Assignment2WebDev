@@ -111,6 +111,8 @@ app.get('/state/:selected_state', (req, res) => {
                         let state_name = row.state_name;
                         let response = template.replace('{{{STATE}}}', state_name);
                         response = response.replace('{{{CONTENT HERE}}}', state_name);
+                        var imgStr = "<img src= '../css/pictures/" + row.state_abbreviation + ".png'>";
+                        response = response.replace("{{{INSERT PIC}}}", imgStr);
                         db.all('SELECT * FROM Consumption WHERE state_abbreviation = ? ORDER BY year', [row.state_abbreviation], (err,rows) => {
                             if(err) {
                                 res.status(404).send('ERROR: A mistake was made!');
@@ -188,6 +190,8 @@ app.get('/state/:selected_state', (req, res) => {
                         response = response.replace("{{{NUCLEAR_COUNTS}}}", totalNuclear);
                         response = response.replace("{{{PETROLEUM_COUNTS}}}", totalPetroleum);
                         response = response.replace("{{{RENEWABLE_COUNTS}}}", totalRenewable);
+                        var imgStr = "<img src= '../css/pictures/" + state_abbr + ".png'>";
+                        response = response.replace("{{{INSERT PIC}}}", imgStr);
                         db.get('SELECT state_name from States where state_abbreviation = ?', [state_abbr], (err,row) => {
                             if(err) {
                                 res.status(404).send('ERROR: This code doesn\'t work properly!');
@@ -223,9 +227,11 @@ app.get('/energy/:selected_energy_source', (req, res) => {
         {
             let energy = req.params.selected_energy_source;
             let energy_table = '';
+            var imgStr = "<img src= '../css/pictures/" + energy.toLowerCase() + ".png'>";
+            let response = template.replace("{{{INSERT PIC}}}", imgStr);
             if( energy.toLowerCase() == "coal")
             {
-                let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
                 response = response.replace("{{{CONTENT HERE}}}", "Coal");
                 
                 db.all('select state_abbreviation,year,coal from Consumption order by year, state_abbreviation', (err, rows) => {
@@ -272,7 +278,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             }
             if( energy.toLowerCase() == "natural gas")
             {
-                let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
                 response = response.replace("{{{CONTENT HERE}}}", "Natural Gas");
                 
                 db.all('select state_abbreviation,year,natural_gas from Consumption order by year, state_abbreviation', (err, rows) => {
@@ -319,7 +325,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             }
             if( energy.toLowerCase() == "nuclear")
             {
-                let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
                 response = response.replace("{{{CONTENT HERE}}}", "Nuclear");
                 
                 db.all('select state_abbreviation,year,nuclear from Consumption order by year, state_abbreviation', (err, rows) => {
@@ -366,7 +372,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             }
             if( energy.toLowerCase() == "petroleum")
             {
-                let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
                 response = response.replace("{{{CONTENT HERE}}}", "Petroleum");
                 
                 db.all('select state_abbreviation,year,petroleum from Consumption order by year, state_abbreviation', (err, rows) => {
@@ -413,7 +419,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             }
             if( energy.toLowerCase() == "renewable")
             {
-                let response = template.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
+                response = response.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);
                 response = response.replace("{{{CONTENT HERE}}}", "Renewable");
                 
                 db.all('select state_abbreviation,year,renewable from Consumption order by year, state_abbreviation', (err, rows) => {
