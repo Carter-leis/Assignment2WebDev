@@ -111,7 +111,7 @@ app.get('/state/:selected_state', (req, res) => {
                         let state_name = row.state_name;
                         let response = template.replace('{{{STATE}}}', state_name);
                         response = response.replace('{{{CONTENT HERE}}}', state_name);
-                        var imgStr = "<img src= '../css/pictures/" + row.state_abbreviation + ".png'>";
+                        var imgStr = "<img src= '../css/pictures/" + row.state_abbreviation + ".png' alt='" + state_name +"'>";
                         response = response.replace("{{{INSERT PIC}}}", imgStr);
                         db.all('SELECT * FROM Consumption WHERE state_abbreviation = ? ORDER BY year', [row.state_abbreviation], (err,rows) => {
                             if(err) {
@@ -190,7 +190,7 @@ app.get('/state/:selected_state', (req, res) => {
                         response = response.replace("{{{NUCLEAR_COUNTS}}}", totalNuclear);
                         response = response.replace("{{{PETROLEUM_COUNTS}}}", totalPetroleum);
                         response = response.replace("{{{RENEWABLE_COUNTS}}}", totalRenewable);
-                        var imgStr = "<img src= '../css/pictures/" + state_abbr + ".png'>";
+                        var imgStr = "<img src= '../css/pictures/" + state_abbr + ".png' alt='" + state_abbr + "'>";
                         response = response.replace("{{{INSERT PIC}}}", imgStr);
                         db.get('SELECT state_name from States where state_abbreviation = ?', [state_abbr], (err,row) => {
                             if(err) {
@@ -227,7 +227,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
         {
             let energy = req.params.selected_energy_source;
             let energy_table = '';
-            var imgStr = "<img src= '../css/pictures/" + energy.toLowerCase() + ".png'>";
+            var imgStr = "<img src= '../css/pictures/" + energy.toLowerCase() + ".png' alt='" + energy + "'>";
             let response = template.replace("{{{INSERT PIC}}}", imgStr);
             if( energy.toLowerCase() == "coal")
             {
