@@ -34,10 +34,22 @@
                     window.open("/year/" + year,"_self")
                 }
             };
+            function prevYear() {
+                let prevYear = parseInt(year) -1;
+                window.open("/year/" + prevYear,"_self");
+            };
+            function nextYear() {
+                let nextYear = parseInt(year) +1;
+                window.open("/year/" + nextYear,"_self");
+            };
         </script>
     </div>
     <div class="newValue">
         <p>Year must be 1960 to 2018</p>
+    </div>
+    <div>
+        <button id="prev" type="button" onclick="prevYear();">Previous Year</button>
+        <button id="next" type="button" onclick="nextYear();">Next Year</button>
     </div>
     <div class="year"> {{{CONTENT HERE}}} Energy Report</div>
     <div>
