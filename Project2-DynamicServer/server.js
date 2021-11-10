@@ -97,54 +97,109 @@ app.get('/state/:selected_state', (req, res) => {
     fs.readFile(path.join(template_dir, 'state.html'), "utf-8", (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
-        var statesAval = ['AK','AL','AR','AZ','CA','CO','CT','DC','DE','FL','GA','HI','IA','ID','IL','IN','KS','KY','LA','MA','MD','ME','MI','MN','MO','MS','MT','NC','ND','NE','NH','NJ','NM','NV','NY','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VA','VT','WA','WI','WV','WY'];
         if(err)
         {
             res.status(404).send('Error: file not found');
         }
-        if(!statesAval.includes(req.params.selected_state.toUpperCase()))
-        {
-            res.status(404).send('Error: Data not found for state: '+req.params.selected_state);
-        }
         else
         {
-            let response = template.replace("{{{STATE}}}", req.params.selected_state.toUpperCase());
-            response = response.replace("{{{CONTENT HERE}}}", req.params.selected_state.toUpperCase());
-
-            db.all('select * from Consumption where state_abbreviation = ? order by year', [req.params.selected_state.toUpperCase()], (err, rows) => {
-                let i;
-                let table_items = '';
-                let totalCoal = [];
-                let totalNatural_gas = [];
-                let totalNuclear = [];
-                let totalPetroleum = [];
-                let totalRenewable = [];
-                for(i=0; i <= 58; i++)
-                {
-                    table_items += '<tr>\n';
-                    table_items += '<td>' + rows[i].year + '</td>\n';
-                    table_items += '<td>' + rows[i].coal + '</td>\n';
-                    table_items += '<td>' + rows[i].natural_gas+ '</td>\n';
-                    table_items += '<td>' + rows[i].nuclear + '</td>\n';
-                    table_items += '<td>' + rows[i].petroleum+ '</td>\n';
-                    table_items += '<td>' + rows[i].renewable + '</td>\n';
-                    table_items += '<td>' + (parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable)) + '</td>\n';
-                    table_items += '</tr>\n';
+            if(req.params.selected_state.length > 2) {
+                db.get('SELECT * from States where UPPER(state_name) = ?',[req.params.selected_state.toUpperCase()],(err,row) => {
+                    if(err){
+                        res.status(404).send('ERROR: State (name) does not exist');
+                    } else {
+                        let state_name = row.state_name;
+                        let response = template.replace('{{{STATE}}}', state_name);
+                        response = response.replace('{{{CONTENT HERE}}}', state_name);
+                        db.all('SELECT * FROM Consumption WHERE state_abbreviation = ? ORDER BY year', [row.state_abbreviation], (err,rows) => {
+                            if(err) {
+                                res.status(404).send('ERROR: A mistake was made!');
+                            } else {
+                                let i;
+                                let table_items = '';
+                                let totalCoal = [];
+                                let totalNatural_gas = [];
+                                let totalNuclear = [];
+                                let totalPetroleum = [];
+                                let totalRenewable = [];
+                                for(i=0; i <= 58; i++)
+                                {
+                                    table_items += '<tr>\n';
+                                    table_items += '<td>' + rows[i].year + '</td>\n';
+                                    table_items += '<td>' + rows[i].coal + '</td>\n';
+                                    table_items += '<td>' + rows[i].natural_gas+ '</td>\n';
+                                    table_items += '<td>' + rows[i].nuclear + '</td>\n';
+                                    table_items += '<td>' + rows[i].petroleum+ '</td>\n';
+                                    table_items += '<td>' + rows[i].renewable + '</td>\n';
+                                    table_items += '<td>' + (parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable)) + '</td>\n';
+                                    table_items += '</tr>\n';
                 
-                    totalCoal.push(parseInt(rows[i].coal));
-                    totalNatural_gas.push(parseInt(rows[i].natural_gas));
-                    totalNuclear.push(parseInt(rows[i].nuclear));
-                    totalPetroleum.push(parseInt(rows[i].petroleum));
-                    totalRenewable.push(parseInt(rows[i].renewable));
-                }
-                response = response.replace("{{{TABLE HERE}}}", table_items);
-                response = response.replace("{{{COAL_COUNTS}}}", totalCoal);
-                response = response.replace("{{{NATURAL_GAS_COUNTS}}}", totalNatural_gas);
-                response = response.replace("{{{NUCLEAR_COUNTS}}}", totalNuclear);
-                response = response.replace("{{{PETROLEUM_COUNTS}}}", totalPetroleum);
-                response = response.replace("{{{RENEWABLE_COUNTS}}}", totalRenewable);
-                res.status(200).type('html').send(response); // <-- you may need to change this
-            });
+                                    totalCoal.push(parseInt(rows[i].coal));
+                                    totalNatural_gas.push(parseInt(rows[i].natural_gas));
+                                    totalNuclear.push(parseInt(rows[i].nuclear));
+                                    totalPetroleum.push(parseInt(rows[i].petroleum));
+                                    totalRenewable.push(parseInt(rows[i].renewable));
+                                }
+                                response = response.replace("{{{TABLE HERE}}}", table_items);
+                                response = response.replace("{{{COAL_COUNTS}}}", totalCoal);
+                                response = response.replace("{{{NATURAL_GAS_COUNTS}}}", totalNatural_gas);
+                                response = response.replace("{{{NUCLEAR_COUNTS}}}", totalNuclear);
+                                response = response.replace("{{{PETROLEUM_COUNTS}}}", totalPetroleum);
+                                response = response.replace("{{{RENEWABLE_COUNTS}}}", totalRenewable);
+                                res.status(200).type('html').send(response);
+                            }
+                        });
+                    }
+                });
+            } else {
+                let state_abbr = req.params.selected_state.toUpperCase();
+                db.all('select * from Consumption where state_abbreviation = ? order by year', [state_abbr], (err, rows) => {
+                    if (err) {
+                        res.status(404).send('ERROR: State (abbreviation) does not exist!');
+                    } else {
+                        let i;
+                        let table_items = '';
+                        let totalCoal = [];
+                        let totalNatural_gas = [];
+                        let totalNuclear = [];
+                        let totalPetroleum = [];
+                        let totalRenewable = [];
+                        for(i=0; i <= 58; i++)
+                        {
+                            table_items += '<tr>\n';
+                            table_items += '<td>' + rows[i].year + '</td>\n';
+                            table_items += '<td>' + rows[i].coal + '</td>\n';
+                            table_items += '<td>' + rows[i].natural_gas+ '</td>\n';
+                            table_items += '<td>' + rows[i].nuclear + '</td>\n';
+                            table_items += '<td>' + rows[i].petroleum+ '</td>\n';
+                            table_items += '<td>' + rows[i].renewable + '</td>\n';
+                            table_items += '<td>' + (parseInt(rows[i].coal) + parseInt(rows[i].natural_gas) + parseInt(rows[i].nuclear) + parseInt(rows[i].petroleum) + parseInt(rows[i].renewable)) + '</td>\n';
+                            table_items += '</tr>\n';
+                
+                            totalCoal.push(parseInt(rows[i].coal));
+                            totalNatural_gas.push(parseInt(rows[i].natural_gas));
+                            totalNuclear.push(parseInt(rows[i].nuclear));
+                            totalPetroleum.push(parseInt(rows[i].petroleum));
+                            totalRenewable.push(parseInt(rows[i].renewable));
+                        }
+                        let response = template.replace("{{{TABLE HERE}}}", table_items);
+                        response = response.replace("{{{COAL_COUNTS}}}", totalCoal);
+                        response = response.replace("{{{NATURAL_GAS_COUNTS}}}", totalNatural_gas);
+                        response = response.replace("{{{NUCLEAR_COUNTS}}}", totalNuclear);
+                        response = response.replace("{{{PETROLEUM_COUNTS}}}", totalPetroleum);
+                        response = response.replace("{{{RENEWABLE_COUNTS}}}", totalRenewable);
+                        db.get('SELECT state_name from States where state_abbreviation = ?', [state_abbr], (err,row) => {
+                            if(err) {
+                                res.status(404).send('ERROR: This code doesn\'t work properly!');
+                            } else {
+                                response = response.replace("{{{STATE}}}", row.state_name);
+                                response = response.replace("{{{CONTENT HERE}}}", row.state_name);
+                                res.status(200).type('html').send(response); // <-- you may need to change this
+                            }
+                        });
+                    }
+                });
+            }
         }
     });
 });
