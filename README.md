@@ -4,4 +4,4 @@ Images citied:
     https://pixabay.com/vectors/ \
     https://commons.wikimedia.org/wiki/ \
     https://picryl.com/media/ \
-    https://www.flickr.com/photos/ \
+    https://www.flickr.com/photos/ 
