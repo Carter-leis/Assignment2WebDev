@@ -97,6 +97,13 @@ app.get('/state/:selected_state', (req, res) => {
     fs.readFile(path.join(template_dir, 'state.html'), "utf-8", (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
+        var statesAval = ['AK','AL','AR','AZ','CA','CO','CT','DC','DE','FL','GA','HI','IA','ID','IL','IN','KS','KY','LA','MA','MD','ME','MI','MN','MO','MS','MT','NC','ND','NE','NH','NJ','NM','NV','NY','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VA','VT','WA','WI','WV','WY'];
+        for(var i = 0; i<statesAval.length; i++){
+            if(statesAval[i] == req.params.selected_state){
+                var nextState = statesAval[i+1];
+                var prevState = statesAval[i-1];
+            }
+        }
         if(err)
         {
             res.status(404).send('Error: file not found');
@@ -148,6 +155,8 @@ app.get('/state/:selected_state', (req, res) => {
                                 response = response.replace("{{{NUCLEAR_COUNTS}}}", totalNuclear);
                                 response = response.replace("{{{PETROLEUM_COUNTS}}}", totalPetroleum);
                                 response = response.replace("{{{RENEWABLE_COUNTS}}}", totalRenewable);
+                                response = response.replace("{{{NEXT}}}", nextState);
+                                response = response.replace("{{{PREV}}}", prevState);
                                 res.status(200).type('html').send(response);
                             }
                         });
@@ -190,6 +199,8 @@ app.get('/state/:selected_state', (req, res) => {
                         response = response.replace("{{{NUCLEAR_COUNTS}}}", totalNuclear);
                         response = response.replace("{{{PETROLEUM_COUNTS}}}", totalPetroleum);
                         response = response.replace("{{{RENEWABLE_COUNTS}}}", totalRenewable);
+                        response = response.replace("{{{NEXT}}}", nextState);
+                        response = response.replace("{{{PREV}}}", prevState);
                         var imgStr = "<img src= '../css/pictures/" + state_abbr + ".png' alt='" + state_abbr + "'>";
                         response = response.replace("{{{INSERT PIC}}}", imgStr);
                         db.get('SELECT state_name from States where state_abbreviation = ?', [state_abbr], (err,row) => {
@@ -215,6 +226,12 @@ app.get('/energy/:selected_energy_source', (req, res) => {
         // modify `template` and send response
         // this will require a query to the SQL database
         var energy = ['nuclear', 'renewable', 'coal', 'petroleum', 'natural gas'];
+        for(var i = 0; i<energy.length; i++){
+            if(energy[i] == req.params.selected_energy_source){
+                var nextEnergy = energy[i+1];
+                var prevEnergy = energy[i-1];
+            }
+        }
         if(err)
         {
             res.status(404).send('Error: file not found');
@@ -229,6 +246,8 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             let energy_table = '';
             var imgStr = "<img src= '../css/pictures/" + energy.toLowerCase() + ".png' alt='" + energy + "'>";
             let response = template.replace("{{{INSERT PIC}}}", imgStr);
+            response = response.replace("{{{NEXT}}}", nextEnergy);
+            response = response.replace("{{{PREV}}}", prevEnergy);
             if( energy.toLowerCase() == "coal")
             {
                 response = response.replace("{{{ENERGY_TYPE}}}", req.params.selected_energy_source);

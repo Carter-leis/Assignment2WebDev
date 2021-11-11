@@ -17,8 +17,8 @@
     <!-- create template here -->
     <h1 class="header">
         <a href="http://localhost:8000/year/2018">Home</a>
+        <a href="http://localhost:8000/year/2018">Year</a>
         <a href="http://localhost:8000/state/MN">State</a>
-        <a href="http://localhost:8000/energy/coal">Energy</a>
     </h1>
     <div class="newValue">Desired energy:
         <input id="new_energy" type="text" />
@@ -28,15 +28,32 @@
                 let energy = document.getElementById("new_energy").value;
                 window.open("/energy/" + energy,"_self")
             };
+            function prevEnergy() {
+                if(energy_type != "nuclear"){
+                    var prev = "{{{PREV}}}";
+                    window.open("/energy/" + prev.toString() ,"_self")
+              }
+            };
+            function nextEnergy() {
+                if(energy_type != "natural gas"){
+                    var next = "{{{NEXT}}}";
+                    window.open("/energy/" + next.toString() ,"_self")
+              }
+            };
         </script>
     </div>
+    
     <div class="newValue">
-        <p>
-            Coal, Natural Gas, Renewable, Nuclear, Petroleum
-        </p>
+            <p>Coal, Natural Gas, Renewable, Nuclear, Petroleum</p>
+    </div>
+    <div class="buttons">
+        <button id="prev" type="button" onclick="prevEnergy();">Previous Energy Type</button>
+        <button id="next" type="button" onclick="nextEnergy();">Next Energy Type</button>
     </div>
     <div class="picture">
+
         {{{INSERT PIC}}}
+        
     </div>
     <div class="energy"> {{{CONTENT HERE}}} Energy Report</div>
     <div>

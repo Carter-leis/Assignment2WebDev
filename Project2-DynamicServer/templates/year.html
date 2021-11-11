@@ -19,7 +19,7 @@
 </head>
 <body>
     <h1 class="header">
-        <a href="http://localhost:8000/year/2018">Home</a>
+        <a href="http://localhost:8000/">Home</a>
         <a href="http://localhost:8000/state/MN">State</a>
         <a href="http://localhost:8000/energy/coal">Energy</a>
     </h1>
@@ -36,18 +36,25 @@
             };
             function prevYear() {
                 let prevYear = parseInt(year) -1;
-                window.open("/year/" + prevYear,"_self");
+                if(prevYear >= 1960 && prevYear <= 2018)
+                {
+                    window.open("/year/" + prevYear,"_self");
+                }
+                
             };
             function nextYear() {
                 let nextYear = parseInt(year) +1;
-                window.open("/year/" + nextYear,"_self");
+                if(nextYear >= 1960 && nextYear <= 2018)
+                {
+                    window.open("/year/" + nextYear,"_self");
+                }
             };
         </script>
     </div>
     <div class="newValue">
         <p>Year must be 1960 to 2018</p>
     </div>
-    <div>
+    <div class="buttons">
         <button id="prev" type="button" onclick="prevYear();">Previous Year</button>
         <button id="next" type="button" onclick="nextYear();">Next Year</button>
     </div>
@@ -86,6 +93,12 @@
             }]
         },
         options: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: false
+            },
             scales: {
                 y: {
                     beginAtZero: true

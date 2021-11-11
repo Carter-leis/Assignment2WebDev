@@ -43,8 +43,8 @@
 </head>
 <body >
     <h1 class="header">
-        <a href="http://localhost:8000/year/2018">Home</a>
-        <a href="http://localhost:8000/state/MN">State</a>
+        <a href="http://localhost:8000/">Home</a>
+        <a href="http://localhost:8000/year/2018">Year</a>
         <a href="http://localhost:8000/energy/coal">Energy</a>
     </h1>
     <div class="newValue">Desired state:
@@ -55,11 +55,27 @@
                 let state = document.getElementById("new_state").value;
                 window.open("/state/" + state,"_self")
             };
+            function nextState() {
+              if(state != "WY"){
+                var next = "{{{NEXT}}}";
+                window.open("/state/" + next.toString() ,"_self")
+              }
+            };
+            function prevState() {
+              if(state != "AK"){
+                var prev = "{{{PREV}}}";
+                window.open("/state/" + prev.toString() ,"_self")
+              }
+            };
         </script>
     </div>
     <div class="newValue">
         <p>Includes DC</p>
     </div>
+    <div class="buttons">
+        <button id="prev" type="button" onclick="prevState();">Previous State</button>
+        <button id="next" type="button" onclick="nextState();">Next State</button>
+      </div>
     <div class="picture">
         {{{INSERT PIC}}}
     </div>
