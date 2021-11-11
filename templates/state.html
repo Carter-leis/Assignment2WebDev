@@ -53,6 +53,7 @@
         <script type="application/javascript">
             function insertNewState() {
                 let state = document.getElementById("new_state").value;
+                state = state.toUpperCase();
                 window.open("/state/" + state,"_self")
             };
             function nextState() {
