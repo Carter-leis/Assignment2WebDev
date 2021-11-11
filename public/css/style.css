@@ -20,7 +20,8 @@ img {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
-    width: 150px;
+    width: 180px;
+    height: 200px;
 }
 
 .buttons {
@@ -29,7 +30,6 @@ img {
 .picture {
     text-align: center;
 }
-
 .state {
     font-size: 3rem;
     text-align: center;

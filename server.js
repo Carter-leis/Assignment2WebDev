@@ -84,7 +84,6 @@ app.get('/year/:selected_year', (req, res) => {
                 response = response.replace("{{{NUCLEAR_COUNT}}}", totalNuclear);
                 response = response.replace("{{{PETROLEUM_COUNT}}}", totalPetroleum);
                 response = response.replace("{{{RENEWABLE_COUNT}}}", totalRenewable);
-                console.log(response);
                 res.status(200).type('html').send(response); // <-- you may need to change this
             });
         }
@@ -233,7 +232,6 @@ app.get('/state/:selected_state', (req, res) => {
 
 // GET request handler for '/energy/*'
 app.get('/energy/:selected_energy_source', (req, res) => {
-    console.log(req.params.selected_energy_source);
     fs.readFile(path.join(template_dir, 'energy.html'), "utf-8", (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
