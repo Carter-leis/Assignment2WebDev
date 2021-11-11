@@ -106,8 +106,10 @@ app.get('/state/:selected_state', (req, res) => {
         {
             if(req.params.selected_state.length > 2) {
                 db.get('SELECT * from States where UPPER(state_name) = ?',[req.params.selected_state.toUpperCase()],(err,row) => {
+
                     if(err || row === undefined){
                         res.status(404).send('ERROR: State (name) does not exist');
+
                     } else {
                         let state_name = row.state_name;
                         let response = template.replace('{{{STATE}}}', state_name);
@@ -167,8 +169,8 @@ app.get('/state/:selected_state', (req, res) => {
             } else {
                 let state_abbr = req.params.selected_state.toUpperCase();
                 db.all('select * from Consumption where state_abbreviation = ? order by year', [state_abbr], (err, rows) => {
-                    if (err) {
-                        res.status(404).send('ERROR: State (abbreviation) does not exist!');
+                    if (!statesAval.includes(state_abbr)) {
+                        res.status(404).send( 'ERROR: State ' + state_abbr + ' does not exist!');
                     } else {
 
                         for(var j = 0; j<statesAval.length; j++){
