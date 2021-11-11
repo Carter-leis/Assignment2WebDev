@@ -98,12 +98,6 @@ app.get('/state/:selected_state', (req, res) => {
         // modify `template` and send response
         // this will require a query to the SQL database
         var statesAval = ['AK','AL','AR','AZ','CA','CO','CT','DC','DE','FL','GA','HI','IA','ID','IL','IN','KS','KY','LA','MA','MD','ME','MI','MN','MO','MS','MT','NC','ND','NE','NH','NJ','NM','NV','NY','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VA','VT','WA','WI','WV','WY'];
-        for(var i = 0; i<statesAval.length; i++){
-            if(statesAval[i] == req.params.selected_state){
-                var nextState = statesAval[i+1];
-                var prevState = statesAval[i-1];
-            }
-        }
         if(err)
         {
             res.status(404).send('Error: file not found');
@@ -112,7 +106,7 @@ app.get('/state/:selected_state', (req, res) => {
         {
             if(req.params.selected_state.length > 2) {
                 db.get('SELECT * from States where UPPER(state_name) = ?',[req.params.selected_state.toUpperCase()],(err,row) => {
-                    if(err){
+                    if(err || row === undefined){
                         res.status(404).send('ERROR: State (name) does not exist');
                     } else {
                         let state_name = row.state_name;
@@ -124,6 +118,14 @@ app.get('/state/:selected_state', (req, res) => {
                             if(err) {
                                 res.status(404).send('ERROR: A mistake was made!');
                             } else {
+
+                                for(var j = 0; j<statesAval.length; j++){
+                                    if(statesAval[j] == row.state_abbreviation){
+                                        var nextState = statesAval[j+1];
+                                        var prevState = statesAval[j-1];
+                                    }
+                                }
+
                                 let i;
                                 let table_items = '';
                                 let totalCoal = [];
@@ -168,6 +170,14 @@ app.get('/state/:selected_state', (req, res) => {
                     if (err) {
                         res.status(404).send('ERROR: State (abbreviation) does not exist!');
                     } else {
+
+                        for(var j = 0; j<statesAval.length; j++){
+                            if(statesAval[j] == req.params.selected_state){
+                                var nextState = statesAval[j+1];
+                                var prevState = statesAval[j-1];
+                            }
+                        }
+
                         let i;
                         let table_items = '';
                         let totalCoal = [];
