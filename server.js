@@ -108,7 +108,7 @@ app.get('/state/:selected_state', (req, res) => {
                 db.get('SELECT * from States where UPPER(state_name) = ?',[req.params.selected_state.toUpperCase()],(err,row) => {
 
                     if(err || row === undefined){
-                        res.status(404).send('ERROR: State (name) does not exist');
+                        res.status(404).send('ERROR: State ' +  req.params.selected_state + ' does not exist');
 
                     } else {
                         let state_name = row.state_name;
