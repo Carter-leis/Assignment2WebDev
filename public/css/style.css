@@ -23,6 +23,9 @@ img {
     width: 150px;
 }
 
+.buttons {
+    text-align: center;
+}
 .picture {
     text-align: center;
 }
