@@ -235,9 +235,9 @@ app.get('/energy/:selected_energy_source', (req, res) => {
     fs.readFile(path.join(template_dir, 'energy.html'), "utf-8", (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
-        var energy = ['nuclear', 'renewable', 'coal', 'petroleum', 'natural gas'];
+        var energy = ["nuclear", "renewable", "coal", "petroleum", "natural gas"];
         for(var i = 0; i<energy.length; i++){
-            if(energy[i] == req.params.selected_energy_source){
+            if(energy[i] == req.params.selected_energy_source.toLowerCase()){
                 var nextEnergy = energy[i+1];
                 var prevEnergy = energy[i-1];
             }
