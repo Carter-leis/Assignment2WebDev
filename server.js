@@ -111,7 +111,7 @@ app.get('/state/:selected_state', (req, res) => {
 
                     } else {
                         let state_name = row.state_name;
-                        let response = template.replace('{{{STATE}}}', state_name);
+                        let response = template.replace('{{{STATE}}}', row.state_abbreviation);
                         response = response.replace('{{{CONTENT HERE}}}', state_name);
                         var imgStr = "<img src= '../css/pictures/" + row.state_abbreviation + ".png' alt='" + state_name +"'>";
                         response = response.replace("{{{INSERT PIC}}}", imgStr);
@@ -218,7 +218,7 @@ app.get('/state/:selected_state', (req, res) => {
                             if(err) {
                                 res.status(404).send('ERROR: This code doesn\'t work properly!');
                             } else {
-                                response = response.replace("{{{STATE}}}", row.state_name);
+                                response = response.replace("{{{STATE}}}", state_abbr);
                                 response = response.replace("{{{CONTENT HERE}}}", row.state_name);
                                 res.status(200).type('html').send(response); // <-- you may need to change this
                             }

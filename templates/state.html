@@ -57,15 +57,16 @@
                 window.open("/state/" + state,"_self")
             };
             function nextState() {
-              if(state != "WY"){
-                var next = "{{{NEXT}}}";
-                window.open("/state/" + next.toString() ,"_self")
+              var next = "{{{NEXT}}}";
+              if(next != "undefined") {
+                window.open("/state/" + next.toString() ,"_self");
               }
+              
             };
             function prevState() {
-              if(state != "AK"){
-                var prev = "{{{PREV}}}";
-                window.open("/state/" + prev.toString() ,"_self")
+              var prev = "{{{PREV}}}";
+              if(prev != "undefined") {
+                window.open("/state/" + prev.toString() ,"_self");
               }
             };
         </script>
